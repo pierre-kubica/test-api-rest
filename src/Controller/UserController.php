@@ -14,7 +14,6 @@ class UserController extends AbstractController
     #[Route(name: 'app_user_get_all', methods: ['GET'])]
     public function getAllUsers(UserRepository $repository): JsonResponse
     {
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         $users = $repository->findAll();
 
         if(!count($users))
