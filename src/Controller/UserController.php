@@ -55,7 +55,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{guid}', name: 'app_user_get_by_id', methods: ['GET'])]
-    public function getUserById(int $guid, UserRepository $repository): JsonResponse
+    public function getUserById(string $guid, UserRepository $repository): JsonResponse
     {
         $user = $repository->findOneBy(['guid' => $guid]);
 
@@ -68,7 +68,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{guid}', name: 'app_user_update', methods: ['PUT'])]
-    public function updateUser(int $guid, UserRepository $repository): JsonResponse
+    public function updateUser(string $guid, UserRepository $repository): JsonResponse
     {
         $user = $repository->findOneBy(['guid' => $guid]);
 
@@ -102,9 +102,16 @@ class UserController extends AbstractController
         return $jsonResponse;
     }
 
-    #[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
-    public function deleteUser(User $user): JsonResponse
+    #[Route('/{guid}', name: 'app_user_delete', methods: ['DELETE'])]
+    public function deleteUser(string $guid, UserRepository $repository): JsonResponse
     {
+        $user = $repository->findOneBy(['guid' => $guid]);
+
+        if(!$user)
+        {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
         try
         {
             $this->em->remove($user);
